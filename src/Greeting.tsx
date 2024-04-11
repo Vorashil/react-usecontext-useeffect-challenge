@@ -1,3 +1,6 @@
+import {useUserContext} from "./context/UserContext";
+import {useRef} from "react";
+
 type GreetingProps = {
     name: string | undefined;
 
@@ -5,8 +8,9 @@ type GreetingProps = {
 
 export default function Greeting({ name }:GreetingProps) {
 
+    const {user} = useUserContext();
 
     return (
-        <h1 className={"p-2 m-3 text-blue-950 font-mono"}>Salam, {name ?? 'dost'}!</h1>
+        <h1 className={"p-2 m-3 text-blue-950 font-mono"}>Salam, {user ? user.firstName : 'dost'}!</h1>
     );
 }
