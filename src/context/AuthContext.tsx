@@ -1,31 +1,40 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
+export type UserType = {
+    userName: string,
+    firstName: string,
+    lastName: string,
+    imageUrl: string,
+    gender: string,
+}
+
 interface AuthContextType {
-    isLoggedIn: boolean;
-    login: () => void;
+    user: UserType | null;
+    login: (user: UserType) => void;
     logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export default AuthContext;
 
 interface AuthProviderProps {
     children: ReactNode;
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+    const [user, setUser] = useState<UserType | null>(null);
 
-    const login = () => {
-        console.log('login');
-        setIsLoggedIn(true);
+    const login = (user: UserType) => {
+        setUser(user)
     }
+
     const logout = () => {
-        console.log('logout');
-        setIsLoggedIn(false);
+        setUser(null);
     }
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

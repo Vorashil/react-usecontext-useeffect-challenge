@@ -1,50 +1,58 @@
 import {useAuthContext} from "../../context/AuthContext";
-import {createRef, useState} from "react";
+import {createRef, useEffect, useRef, useState} from "react";
 import InputField from "../../common/InputField";
 import LoginPageButtons from "./components/LoginPageButtons";
 import LoggedInView from "./components/LoggedInView";
 import ForgotPasswordView from "./components/ForgotPasswordView";
+import LoggedOutView from "./components/LoggedOutView";
 
 export default function LoginPage() {
 
-    const {isLoggedIn, login, logout} = useAuthContext();
+    const {user, login, logout} = useAuthContext();
     const [hasForgotPassword, setHasForgotPassword] = useState(false);
 
     const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [username, setUsername] = useState("")
 
 
-    const LoggedOutView = () => {
-        return (
-            <form>
-                <div className={"my-2"}>
-                    Log in
-                </div>
+    const handleLogin = async (username: string, password: string) => {
+        console.log(`username: ${username}, password: ${password}`)
 
-                <div className={"flex flex-col m-2"}>
-                    <InputField key={"username-login"} type={"text"} placeholder={"Username"}
-                                onChangeHandler={setUsername} value={username}/>
-                    <InputField key={"password-login"} type={"password"} placeholder={"Password"}
-                                onChangeHandler={setPassword} value={password}/>
-                </div>
+        const requestBody = {
+            username,
+            password,
+            expiresInMins: 30
+        }
 
-                <div className={"my-2 flex justify-center"}>
-                    <LoginPageButtons onClick={login} text={"Login"}/>
-                    <LoginPageButtons onClick={() => setHasForgotPassword(true)} text={"Forgot my Password"}/>
-                </div>
-            </form>
+        const response = await fetch('https://dummyjson.com/auth/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(requestBody)
+        })
+
+        const userData = await response.json()
+
+        console.log('userData:', userData)
+
+        login(
+            {
+                userName: userData.username,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                imageUrl: userData.image,
+                gender: userData.gender
+            }
         )
+
     }
 
     return (
         <div className={"flex flex-col items-center"}>
-            {isLoggedIn
+            {user != null
                 ? <LoggedInView logout={logout}/>
                 : hasForgotPassword
                     ?
                     <ForgotPasswordView email={email} setEmail={setEmail} setHasForgotPassword={setHasForgotPassword}/>
-                    : <LoggedOutView/>  }
+                    : <LoggedOutView handleLogin={handleLogin} setHasForgotPassword={setHasForgotPassword}/>}
         </div>
     )
 }

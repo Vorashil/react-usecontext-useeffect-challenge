@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Route, Routes} from 'react-router-dom';
 import HomePage from "./pages/home/HomePage";
 import MyPage from "./pages/my-page/MyPage";
@@ -9,13 +9,13 @@ import {useAuthContext} from "./context/AuthContext";
 
 export default function App({RouterComponent}: { RouterComponent: any }) {
 
-    const {isLoggedIn} = useAuthContext();
+    const {user} = useAuthContext();
 
 
     return (
         <div className={"bg-blue-50 h-screen overflow-scroll font-mono"}>
             <RouterComponent>
-                <NavBar isLogged={isLoggedIn}/>
+                <NavBar isLogged={user != null}/>
                 <Routes>
                     <Route path="/" element={<HomePage/>}/>
                     <Route path="/mypage" element={<MyPage/>}/>
