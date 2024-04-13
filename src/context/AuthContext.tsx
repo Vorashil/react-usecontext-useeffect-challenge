@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, {createContext, useState, useContext, ReactNode, useReducer, Dispatch} from 'react';
 
 export type UserType = {
     userName: string,
@@ -10,8 +10,7 @@ export type UserType = {
 
 interface AuthContextType {
     user: UserType | null;
-    login: (user: UserType) => void;
-    logout: () => void;
+    dispatch: Dispatch<{ type: string, newState: UserType }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,19 +21,28 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps): JSX.Element => {
-    const [user, setUser] = useState<UserType | null>(null);
+export const AuthProvider = ({children}: AuthProviderProps): JSX.Element => {
 
-    const login = (user: UserType) => {
-        setUser(user)
+    const reducer = (
+        state: UserType | null,
+        action: {
+            type: string;
+            newState: UserType
+        }) => {
+        switch (action.type) {
+            case 'LOGIN':
+                return action.newState;
+            case 'LOGOUT':
+                return null;
+            default:
+                return state;
+        }
     }
 
-    const logout = () => {
-        setUser(null);
-    }
+    const [user, dispatch] = useReducer(reducer, null);
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{user, dispatch}}>
             {children}
         </AuthContext.Provider>
     );

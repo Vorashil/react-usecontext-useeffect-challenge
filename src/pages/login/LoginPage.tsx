@@ -8,7 +8,7 @@ import LoggedOutView from "./components/LoggedOutView";
 
 export default function LoginPage() {
 
-    const {user, login, logout} = useAuthContext();
+    const {user, dispatch} = useAuthContext();
     const [hasForgotPassword, setHasForgotPassword] = useState(false);
 
     const [email, setEmail] = useState("")
@@ -33,17 +33,21 @@ export default function LoginPage() {
 
         console.log('userData:', userData)
 
-        login(
-            {
+        dispatch({
+            type: 'LOGIN',
+            newState: {
+
                 userName: userData.username,
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 imageUrl: userData.image,
                 gender: userData.gender
             }
-        )
+        })
+
 
     }
+    const logout = () => {}
 
     return (
         <div className={"flex flex-col items-center"}>
