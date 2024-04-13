@@ -47,7 +47,9 @@ export default function LoginPage() {
 
 
     }
-    const logout = () => {}
+    const logout = () => {
+        dispatch({type: 'LOGOUT', newState: null})
+    }
 
     return (
         <div className={"flex flex-col items-center"}>

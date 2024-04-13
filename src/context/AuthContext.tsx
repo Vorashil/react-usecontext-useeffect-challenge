@@ -10,7 +10,7 @@ export type UserType = {
 
 interface AuthContextType {
     user: UserType | null;
-    dispatch: Dispatch<{ type: string, newState: UserType }>
+    dispatch: Dispatch<{ type: string, newState: UserType | null  }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,13 +27,13 @@ export const AuthProvider = ({children}: AuthProviderProps): JSX.Element => {
         state: UserType | null,
         action: {
             type: string;
-            newState: UserType
+            newState: UserType | null;
         }) => {
         switch (action.type) {
             case 'LOGIN':
                 return action.newState;
             case 'LOGOUT':
-                return null;
+                return action.newState;
             default:
                 return state;
         }
